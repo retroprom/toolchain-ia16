@@ -165,15 +165,14 @@ if in_list gcc1 BUILDLIST; then
   echo "* Building stage 1 GCC *"
   echo "************************"
   echo
-  # Check for any previously installed `i80286', `wide-types', or
-  # `{rtd, any_186}/frame-pointer' multilibs, and clean them away...
+  # Check for any previously installed `i80286', `wide-types', or `frame-
+  # pointer' multilibs, and clean them away...
   if [ -e "$PREFIX"/ia16-elf/lib/i80286 -o \
        -e "$PREFIX"/ia16-elf/lib/wide-types -o \
-       -e "$PREFIX"/ia16-elf/lib/rtd/frame-pointer -o \
-       -e "$PREFIX"/ia16-elf/lib/any_186/frame-pointer ]; then
-    find "$PREFIX" -name i80286 -print0 | xargs -0 rm -rf
-    find "$PREFIX" -name wide-types -print0 | xargs -0 rm -rf
-    find "$PREFIX" -name frame-pointer -print0 | xargs -0 rm -rf
+       -e "$PREFIX"/ia16-elf/lib/frame-pointer ]; then
+    find "$PREFIX"/ia16-elf/lib -name i80286 -print0 | xargs -0 rm -rf
+    find "$PREFIX"/ia16-elf/lib -name wide-types -print0 | xargs -0 rm -rf
+    find "$PREFIX"/ia16-elf/lib -name frame-pointer -print0 | xargs -0 rm -rf
   fi
   rm -rf build
   mkdir build
@@ -193,8 +192,7 @@ if in_list newlib BUILDLIST; then
   echo
   if [ -e "$PREFIX"/ia16-elf/lib/i80286 -o \
        -e "$PREFIX"/ia16-elf/lib/wide-types -o \
-       -e "$PREFIX"/ia16-elf/lib/rtd/frame-pointer -o \
-       -e "$PREFIX"/ia16-elf/lib/any_186/frame-pointer ]; then
+       -e "$PREFIX"/ia16-elf/lib/frame-pointer ]; then
     echo 'Please rebuild gcc1.'
     exit 1
   fi
@@ -294,8 +292,7 @@ if in_list gcc2 BUILDLIST; then
   echo
   if [ -e "$PREFIX"/ia16-elf/lib/i80286 -o \
        -e "$PREFIX"/ia16-elf/lib/wide-types -o \
-       -e "$PREFIX"/ia16-elf/lib/rtd/frame-pointer -o \
-       -e "$PREFIX"/ia16-elf/lib/any_186/frame-pointer -o \
+       -e "$PREFIX"/ia16-elf/lib/frame-pointer -o \
        -e "$PREFiX"/ia16-elf/lib/elks-combined.ld -o \
        -e "$PREFIX"/ia16-elf/lib/elks-separate.ld ]; then
     echo 'Please rebuild gcc1 and newlib.'
