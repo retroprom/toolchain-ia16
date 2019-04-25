@@ -170,18 +170,25 @@ if in_list gcc1 BUILDLIST; then
   # them away...
   if [ -e "$PREFIX"/ia16-elf/lib/i80286 -o \
        -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/i80286 -o \
+       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/i80286 -o \
        -e "$PREFIX"/ia16-elf/lib/wide-types -o \
        -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/wide-types -o \
+       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/wide-types -o \
        -e "$PREFIX"/ia16-elf/lib/frame-pointer -o \
        -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/frame-pointer -o \
+       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/frame-pointer -o \
        -e "$PREFIX"/ia16-elf/lib/rtd/elkslibc -o \
        -e "$PREFIX"/ia16-elf/lib/regparmcall/elkslibc ]; then
     find "$PREFIX"/ia16-elf/lib -name i80286 -print0 | xargs -0 rm -rf
     find "$PREFIX"/lib/gcc/ia16-elf -name i80286 -print0 | xargs -0 rm -rf
+    find "$PREFIX"/ia16-elf/include -name i80286 -print0 | xargs -0 rm -rf
     find "$PREFIX"/ia16-elf/lib -name wide-types -print0 | xargs -0 rm -rf
     find "$PREFIX"/lib/gcc/ia16-elf -name wide-types -print0 | xargs -0 rm -rf
+    find "$PREFIX"/ia16-elf/include -name wide-types -print0 | xargs -0 rm -rf
     find "$PREFIX"/ia16-elf/lib -name frame-pointer -print0 | xargs -0 rm -rf
     find "$PREFIX"/lib/gcc/ia16-elf -name frame-pointer -print0 \
+      | xargs -0 rm -rf
+    find "$PREFIX"/ia16-elf/include -name frame-pointer -print0 \
       | xargs -0 rm -rf
     find "$PREFIX"/ia16-elf/lib -name elkslibc -print0 | xargs -0 rm -rf
   fi
@@ -203,10 +210,13 @@ if in_list newlib BUILDLIST; then
   echo
   if [ -e "$PREFIX"/ia16-elf/lib/i80286 -o \
        -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/i80286 -o \
+       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/i80286 -o \
        -e "$PREFIX"/ia16-elf/lib/wide-types -o \
        -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/wide-types -o \
+       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/wide-types -o \
        -e "$PREFIX"/ia16-elf/lib/frame-pointer -o \
        -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/frame-pointer -o \
+       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/frame-pointer -o \
        -e "$PREFIX"/ia16-elf/lib/rtd/elkslibc -o \
        -e "$PREFIX"/ia16-elf/lib/regparmcall/elkslibc ]; then
     echo 'Please rebuild gcc1.'
@@ -288,10 +298,13 @@ if in_list gcc2 BUILDLIST; then
   echo
   if [ -e "$PREFIX"/ia16-elf/lib/i80286 -o \
        -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/i80286 -o \
+       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/i80286 -o \
        -e "$PREFIX"/ia16-elf/lib/wide-types -o \
        -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/wide-types -o \
+       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/wide-types -o \
        -e "$PREFIX"/ia16-elf/lib/frame-pointer -o \
        -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/frame-pointer -o \
+       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/frame-pointer -o \
        -e "$PREFiX"/ia16-elf/lib/elks-combined.ld -o \
        -e "$PREFIX"/ia16-elf/lib/elks-separate.ld -o \
        -e "$PREFIX"/ia16-elf/lib/rtd/elkslibc -o \
