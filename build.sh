@@ -159,6 +159,23 @@ if in_list isl BUILDLIST; then
   popd
 fi
 
+obsolete_multilibs_installed () {
+  [ -e "$PREFIX"/ia16-elf/lib/i80286 -o \
+    -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/i80286 -o \
+    -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/i80286 -o \
+    -e "$PREFIX"/ia16-elf/lib/any_186 -o \
+    -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/any_186 -o \
+    -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/any_186 -o \
+    -e "$PREFIX"/ia16-elf/lib/wide-types -o \
+    -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/wide-types -o \
+    -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/wide-types -o \
+    -e "$PREFIX"/ia16-elf/lib/frame-pointer -o \
+    -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/frame-pointer -o \
+    -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/frame-pointer -o \
+    -e "$PREFIX"/ia16-elf/lib/rtd/elkslibc -o \
+    -e "$PREFIX"/ia16-elf/lib/regparmcall/elkslibc ]
+}
+
 if in_list gcc1 BUILDLIST; then
   echo
   echo "************************"
@@ -168,21 +185,14 @@ if in_list gcc1 BUILDLIST; then
   # Check for any previously installed `i80286', `wide-types', or `frame-
   # pointer' multilibs, as well as "old style" `elkslibc' libraries, and clean
   # them away...
-  if [ -e "$PREFIX"/ia16-elf/lib/i80286 -o \
-       -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/i80286 -o \
-       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/i80286 -o \
-       -e "$PREFIX"/ia16-elf/lib/wide-types -o \
-       -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/wide-types -o \
-       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/wide-types -o \
-       -e "$PREFIX"/ia16-elf/lib/frame-pointer -o \
-       -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/frame-pointer -o \
-       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/frame-pointer -o \
-       -e "$PREFIX"/ia16-elf/lib/rtd/elkslibc -o \
-       -e "$PREFIX"/ia16-elf/lib/regparmcall/elkslibc ]; then
+  if obsolete_multilibs_installed; then
     set +e
     find "$PREFIX"/ia16-elf/lib -name i80286 -print0 | xargs -0 rm -rf
     find "$PREFIX"/lib/gcc/ia16-elf -name i80286 -print0 | xargs -0 rm -rf
     find "$PREFIX"/ia16-elf/include -name i80286 -print0 | xargs -0 rm -rf
+    find "$PREFIX"/ia16-elf/lib -name any_186 -print0 | xargs -0 rm -rf
+    find "$PREFIX"/lib/gcc/ia16-elf -name any_186 -print0 | xargs -0 rm -rf
+    find "$PREFIX"/ia16-elf/include -name any_186 -print0 | xargs -0 rm -rf
     find "$PREFIX"/ia16-elf/lib -name wide-types -print0 | xargs -0 rm -rf
     find "$PREFIX"/lib/gcc/ia16-elf -name wide-types -print0 | xargs -0 rm -rf
     find "$PREFIX"/ia16-elf/include -name wide-types -print0 | xargs -0 rm -rf
@@ -210,17 +220,7 @@ if in_list newlib BUILDLIST; then
   echo "* Building Newlib C library *"
   echo "*****************************"
   echo
-  if [ -e "$PREFIX"/ia16-elf/lib/i80286 -o \
-       -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/i80286 -o \
-       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/i80286 -o \
-       -e "$PREFIX"/ia16-elf/lib/wide-types -o \
-       -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/wide-types -o \
-       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/wide-types -o \
-       -e "$PREFIX"/ia16-elf/lib/frame-pointer -o \
-       -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/frame-pointer -o \
-       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/frame-pointer -o \
-       -e "$PREFIX"/ia16-elf/lib/rtd/elkslibc -o \
-       -e "$PREFIX"/ia16-elf/lib/regparmcall/elkslibc ]; then
+  if obsolete_multilibs_installed; then
     echo 'Please rebuild gcc1.'
     exit 1
   fi
@@ -254,6 +254,10 @@ if in_list libi86 BUILDLIST; then
   echo
   [ -f libi86/.git/config ] || \
     git clone https://gitlab.com/tkchia/libi86.git
+  if obsolete_multilibs_installed; then
+    echo 'Please rebuild gcc1 and newlib.'
+    exit 1
+  fi
   # Remove some internal headers that I added at some point in time and later
   # made redundant (or build-internal) again...  -- tkchia 20190101
   rm -f "$PREFIX"/ia16-elf/include/libi86/internal/conio.h \
@@ -286,6 +290,10 @@ if in_list elks-libc BUILDLIST; then
   # is quite big and we may not always need it.  -- tkchia 20190426
   [ -f elks/.git/config ] || \
     git clone https://github.com/tkchia/elks.git
+  if obsolete_multilibs_installed; then
+    echo 'Please rebuild gcc1 and newlib.'
+    exit 1
+  fi
   pushd elks
   mkdir -p cross
   script -e -c ". tools/env.sh && make defconfig" build.log
@@ -302,19 +310,7 @@ if in_list gcc2 BUILDLIST; then
   echo "* Building stage 2 GCC *"
   echo "************************"
   echo
-  if [ -e "$PREFIX"/ia16-elf/lib/i80286 -o \
-       -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/i80286 -o \
-       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/i80286 -o \
-       -e "$PREFIX"/ia16-elf/lib/wide-types -o \
-       -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/wide-types -o \
-       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/wide-types -o \
-       -e "$PREFIX"/ia16-elf/lib/frame-pointer -o \
-       -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/frame-pointer -o \
-       -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/frame-pointer -o \
-       -e "$PREFiX"/ia16-elf/lib/elks-combined.ld -o \
-       -e "$PREFIX"/ia16-elf/lib/elks-separate.ld -o \
-       -e "$PREFIX"/ia16-elf/lib/rtd/elkslibc -o \
-       -e "$PREFIX"/ia16-elf/lib/regparmcall/elkslibc ]; then
+  if obsolete_multilibs_installed; then
     echo 'Please rebuild gcc1 and newlib.'
     exit 1
   fi
