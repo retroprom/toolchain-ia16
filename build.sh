@@ -260,8 +260,7 @@ if in_list libi86 BUILDLIST; then
     (cd ../libi86 && ./autogen.sh)
   fi
   script -e -c "../libi86/configure --host=ia16-elf --prefix='$PREFIX' \
-				    --exec-prefix='$PREFIX'/ia16-elf" \
-	 -a build.log
+				    --exec-prefix='$PREFIX'/ia16-elf" build.log
   script -e -c "make $PARALLEL" -a build.log
   if dosemu --version >/dev/null 2>/dev/null; then
     script -e -c "make check" -a build.log
@@ -276,21 +275,17 @@ if in_list elks-libc BUILDLIST; then
   echo "* Building elks-libc *"
   echo "**********************"
   echo
-  # (1) The ELKS source tree is not downloaded on default by fetch.sh, since
-  #	it is quite big and we may not always need it.
-  # (2) gcc-ia16 does not yet have integrated support for linking ELKS
-  #	programs with elks-libc.  -- tkchia 20190419
+  # The ELKS source tree is not downloaded on default by fetch.sh, since it
+  # is quite big and we may not always need it.  -- tkchia 20190426
   [ -f elks/.git/config ] || \
     git clone https://github.com/tkchia/elks.git
   pushd elks
   mkdir -p cross
-  script -e -c ". tools/env.sh && make defconfig" -a build.log
+  script -e -c ". tools/env.sh && make defconfig" build.log
   script -e -c ". tools/env.sh && cd libc && make clean" -a build.log
   script -e -c ". tools/env.sh && cd libc && make -j4 all" -a build.log
-  mkdir -p "$PREFIX"/ia16-elf/lib/elkslibc/
-  cp -v libc/libc.a libc/crt0.o elks/elks-raw.ld elks/elks-small.ld \
-     elks/elks-tiny.ld "$PREFIX"/ia16-elf/lib/elkslibc/
-  # TODO: install the other multilibs.  -- tkchia 20190425
+  script -e -c ". tools/env.sh && cd libc \
+		&& make -j4 PREFIX='$PREFIX' install" -a build.log
   popd
 fi
 
@@ -337,7 +332,7 @@ if in_list extra BUILDLIST; then
   mkdir build-pdcurses
   pushd build-pdcurses
   make $PARALLEL -f ../pdcurses/dos/gccdos16.mak PDCURSES_SRCDIR=../pdcurses \
-    CC="$PREFIX/bin/ia16-elf-gcc" pdcurses.a 2>&1 | tee -a build.log
+    CC="$PREFIX/bin/ia16-elf-gcc" pdcurses.a 2>&1 | tee build.log
   make -f ../pdcurses/dos/gccdos16.mak PDCURSES_SRCDIR=../pdcurses \
     CC="$PREFIX/bin/ia16-elf-gcc" worm.exe xmas.exe 2>&1 | tee -a build.log
   cp -a pdcurses.a "$PREFIX"/ia16-elf/lib/libpdcurses.a
@@ -350,7 +345,7 @@ if in_list extra BUILDLIST; then
   mkdir build-ubasic
   pushd build-ubasic
   make $PARALLEL -f ../ubasic-ia16/Makefile.ia16 VPATH=../ubasic-ia16 2>&1 | \
-    tee -a build.log
+    tee build.log
   popd
 fi
 
@@ -561,7 +556,7 @@ if in_list prereqs-djgpp BUILDLIST; then
   pushd build-mpfr-djgpp
   ../mpfr-3.1.5/configure --target=i586-pc-msdosdjgpp \
     --host=i586-pc-msdosdjgpp --prefix="$PREFIX-djgpp-prereqs" \
-    --with-gmp="$PREFIX-djgpp-prereqs" --disable-shared 2>&1 | tee -a build.log
+    --with-gmp="$PREFIX-djgpp-prereqs" --disable-shared 2>&1 | tee build.log
   script -e -c "make $PARALLEL" -a build.log
   script -e -c "make $PARALLEL install" -a build.log
   popd
@@ -571,14 +566,14 @@ if in_list prereqs-djgpp BUILDLIST; then
   ../mpc-1.0.3/configure --target=i586-pc-msdosdjgpp \
     --host=i586-pc-msdosdjgpp --prefix="$PREFIX-djgpp-prereqs" \
     --with-gmp="$PREFIX-djgpp-prereqs" --with-mpfr="$PREFIX-djgpp-prereqs" \
-    --disable-shared 2>&1 | tee -a build.log
+    --disable-shared 2>&1 | tee build.log
   script -e -c "make $PARALLEL" -a build.log
   script -e -c "make $PARALLEL install" -a build.log
   popd
   rm -rf build-isl-djgpp
   mkdir build-isl-djgpp
   pushd build-isl-djgpp
-  ../isl-0.16.1/configure --target=i586-pc-msdosdjgpp --host=i586-pc-msdosdjgpp --prefix="$PREFIX-djgpp-prereqs" --disable-shared --with-gmp-prefix="$PREFIX-djgpp-prereqs" 2>&1 | tee -a build.log
+  ../isl-0.16.1/configure --target=i586-pc-msdosdjgpp --host=i586-pc-msdosdjgpp --prefix="$PREFIX-djgpp-prereqs" --disable-shared --with-gmp-prefix="$PREFIX-djgpp-prereqs" 2>&1 | tee build.log
   script -e -c "make $PARALLEL" -a build.log
   script -e -c "make $PARALLEL install" -a build.log
   popd
