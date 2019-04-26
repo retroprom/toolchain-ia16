@@ -159,7 +159,7 @@ if in_list isl BUILDLIST; then
   popd
 fi
 
-obsolete_multilibs_installed () {
+obsolete_gcc_multilibs_installed () {
   [ -e "$PREFIX"/ia16-elf/lib/i80286 -o \
     -e "$PREFIX"/lib/gcc/ia16-elf/6.3.0/i80286 -o \
     -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/i80286 -o \
@@ -176,6 +176,21 @@ obsolete_multilibs_installed () {
     -e "$PREFIX"/ia16-elf/lib/regparmcall/elkslibc ]
 }
 
+obsolete_newlib_multilibs_installed () {
+  [ -e "$PREFIX"/ia16-elf/lib/elks-combined.ld -o \
+    -e "$PREFIX"/ia16-elf/lib/elks-separate.ld -o \
+    -e "$PREFIX"/ia16-elf/lib/libelks.a -o \
+    -e "$PREFIX"/ia16-elf/lib/elks-crt0.o -o \
+    -e "$PREFIX"/ia16-elf/lib/rtd/libelks.a -o \
+    -e "$PREFIX"/ia16-elf/lib/rtd/elks-crt0.o -o \
+    -e "$PREFIX"/ia16-elf/lib/regparmcall/libelks.a -o \
+    -e "$PREFIX"/ia16-elf/lib/regparmcall/elks-crt0.o ]
+}
+
+obsolete_multilibs_installed () {
+  obsolete_gcc_multilibs_installed || obsolete_newlib_multilibs_installed
+}
+
 if in_list gcc1 BUILDLIST; then
   echo
   echo "************************"
@@ -185,7 +200,7 @@ if in_list gcc1 BUILDLIST; then
   # Check for any previously installed `i80286', `wide-types', or `frame-
   # pointer' multilibs, as well as "old style" `elkslibc' libraries, and clean
   # them away...
-  if obsolete_multilibs_installed; then
+  if obsolete_gcc_multilibs_installed; then
     set +e
     find "$PREFIX"/ia16-elf/lib -name i80286 -print0 | xargs -0 rm -rf
     find "$PREFIX"/lib/gcc/ia16-elf -name i80286 -print0 | xargs -0 rm -rf
@@ -220,15 +235,18 @@ if in_list newlib BUILDLIST; then
   echo "* Building Newlib C library *"
   echo "*****************************"
   echo
-  if obsolete_multilibs_installed; then
+  if obsolete_gcc_multilibs_installed; then
     echo 'Please rebuild gcc1.'
     exit 1
   fi
-  # Remove some ELKS linker scripts under their old names.
-  set +e
-  find "$PREFIX" -name elks-combined.ld -print0 | xargs -0 rm -rf
-  find "$PREFIX" -name elks-separate.ld -print0 | xargs -0 rm -rf
-  set -e
+  if obsolete_newlib_multilibs_installed; then
+    set +e
+    find "$PREFIX" -name elks-combined.ld -print0 | xargs -0 rm -rf
+    find "$PREFIX" -name elks-separate.ld -print0 | xargs -0 rm -rf
+    find "$PREFIX"/ia16-elf/lib -name libelks.a -print0 | xargs -0 rm -rf
+    find "$PREFIX"/ia16-elf/lib -name elks-crt0.o -print0 | xargs -0 rm -rf
+    set -e
+  fi
   # Then...
   rm -rf build-newlib
   mkdir build-newlib
