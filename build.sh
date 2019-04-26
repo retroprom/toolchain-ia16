@@ -179,6 +179,7 @@ if in_list gcc1 BUILDLIST; then
        -e "$PREFIX"/ia16-elf/include/c++/6.3.0/ia16-elf/frame-pointer -o \
        -e "$PREFIX"/ia16-elf/lib/rtd/elkslibc -o \
        -e "$PREFIX"/ia16-elf/lib/regparmcall/elkslibc ]; then
+    set +e
     find "$PREFIX"/ia16-elf/lib -name i80286 -print0 | xargs -0 rm -rf
     find "$PREFIX"/lib/gcc/ia16-elf -name i80286 -print0 | xargs -0 rm -rf
     find "$PREFIX"/ia16-elf/include -name i80286 -print0 | xargs -0 rm -rf
@@ -191,6 +192,7 @@ if in_list gcc1 BUILDLIST; then
     find "$PREFIX"/ia16-elf/include -name frame-pointer -print0 \
       | xargs -0 rm -rf
     find "$PREFIX"/ia16-elf/lib -name elkslibc -print0 | xargs -0 rm -rf
+    set -e
   fi
   rm -rf build
   mkdir build
@@ -223,8 +225,10 @@ if in_list newlib BUILDLIST; then
     exit 1
   fi
   # Remove some ELKS linker scripts under their old names.
+  set +e
   find "$PREFIX" -name elks-combined.ld -print0 | xargs -0 rm -rf
   find "$PREFIX" -name elks-separate.ld -print0 | xargs -0 rm -rf
+  set -e
   # Then...
   rm -rf build-newlib
   mkdir build-newlib
