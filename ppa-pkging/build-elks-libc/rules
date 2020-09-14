@@ -18,7 +18,7 @@ override_dh_auto_configure:
 override_dh_auto_build:
 	. ./env.sh && cd libc && make all
 	# Also build (and later install) elf2elks...
-	. ./env.sh && cd elks/tools/elf2elks && make
+	. ./env.sh && cd elks/tools/elf2elks && make ../bin/elf2elks
 
 override_dh_auto_test:
 	# Unimplemented.
