@@ -24,12 +24,14 @@ do_git_clone () {
 	do_banner "$name already downloaded, skipping"
 	return 0
     fi
-    do_banner "Trying to download $name Git repository using SSH"
-    echo URL: git@"$server":"$path"
-    if git clone --recurse-submodules -v $opts git@"$server":"$path" "$name"
-    then
-	do_banner "Successfully downloaded $name"
-	return 0
+    if which ssh > /dev/null; then
+	do_banner "Trying to download $name Git repository using SSH"
+	echo URL: git@"$server":"$path"
+	if git clone --recurse-submodules -v $opts git@"$server":"$path" "$name"
+	then
+	    do_banner "Successfully downloaded $name"
+	    return 0
+	fi
     fi
     do_banner "SSH failed; falling back on using HTTPS to download $name"
     echo URL: https://"$server"/"$path"
