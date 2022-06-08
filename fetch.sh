@@ -27,7 +27,7 @@ do_git_clone () {
     if which ssh > /dev/null; then
 	do_banner "Trying to download $name Git repository using SSH"
 	echo URL: git@"$server":"$path"
-	if git clone --recurse-submodules -v $opts git@"$server":"$path" "$name"
+	if git clone --depth=1 --recurse-submodules -v $opts git@"$server":"$path" "$name"
 	then
 	    do_banner "Successfully downloaded $name"
 	    return 0
@@ -35,7 +35,7 @@ do_git_clone () {
     fi
     do_banner "SSH failed; falling back on using HTTPS to download $name"
     echo URL: https://"$server"/"$path"
-    if git clone --recurse-submodules -v $opts https://"$server"/"$path" "$name"
+    if git clone --depth=1 --recurse-submodules -v $opts https://"$server"/"$path" "$name"
     then
 	do_banner "Successfully downloaded $name"
 	return 0
