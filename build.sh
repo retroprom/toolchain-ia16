@@ -548,7 +548,7 @@ if in_list causeway BUILDLIST; then
   cp -a causeway build-causeway
   pushd build-causeway
   make clean
-  make $PARALLEL prefix="$PREFIX"
+  make prefix="$PREFIX"
   make install prefix="$PREFIX"
   popd
 fi
