@@ -5,12 +5,14 @@ set -o pipefail
 
 SCRIPTDIR="$(dirname "$0")"
 export HERE="$(cd "$SCRIPTDIR" && pwd)"
-PREFIX="$HERE/prefix"
+
+if [ -z "${PREFIX}" ]; then PREFIX="$HERE/prefix"; fi
+if [ -z "${PARALLEL}" ]; then PARALLEL="-j 4"; fi
+
 REDIST="$HERE/redist"
 REDIST_PPA="$HERE/redist-ppa"
 REDIST_DJGPP="$HERE/redist-djgpp"
-PARALLEL="-j 4"
-#PARALLEL=""
+
 # Suppress -Werror, to prevent certain harmless conditions from being
 # considered as fatal errors:
 # (1) Apparently newer versions of glibc, e.g. 2.33, deprecate mallinfo(),
@@ -167,16 +169,16 @@ else
   EXTRABUILD2OPTSDJGPP=
 fi
 
-BIN=$HERE/prefix/bin
+BIN="$PREFIX/bin"
 if [[ ":$PATH:" != *":$BIN:"* ]]; then
     export PATH="$BIN:${PATH:+"$PATH"}"
-    echo Path set to $PATH
 fi
-DJGPP_BIN=$HERE/djgpp/bin
+DJGPP_BIN="$HERE/djgpp/bin"
 if [[ ":$PATH:" != *":$DJGPP_BIN:"* ]]; then
     export PATH="$DJGPP_BIN:${PATH:+"$PATH"}"
-    echo Path set to $PATH
 fi
+
+echo PATH is $PATH
 
 cd "$HERE"
 
