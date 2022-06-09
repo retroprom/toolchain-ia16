@@ -25,7 +25,7 @@ REDIST_DJGPP="$HERE/redist-djgpp"
 BINUTILSOPTS="--enable-ld=default --enable-gold=yes ` \
 	     `--enable-targets=ia16-elf --enable-x86-hpa-segelf=yes ` \
 	     `--disable-werror"
-AUTOTESTPARALLEL="-j4"
+AUTOTESTPARALLEL="$PARALLEL"
 export SHELL=/bin/bash  # make sure subshells, e.g. in `script', are also bash
 
 # Set this to false to disable C++ (speed up build a bit) for Linux and
