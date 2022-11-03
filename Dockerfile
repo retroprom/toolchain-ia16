@@ -7,8 +7,8 @@ FROM ${BASE} as tools
 
 ENV DEBIAN_FRONTEND="noninteractive"
 
-ENV IA16_PREFIX="/opt/ia16"
-ENV IA16_DEPENDS_TOOLS="ca-certificates diffutils dosbox git-core less make mtools nano patch procps psmisc unzip vim wget zip"
+ENV IA16_PREFIX="/usr/local"
+ENV IA16_DEPENDS_TOOLS="ca-certificates diffutils dosbox git less make mtools nano patch procps psmisc unzip vim wget zip"
 ENV IA16_DEPENDS_BUILD="build-essential autoconf automake bison ca-certificates flex gcc-multilib libncurses-dev libtool texinfo"
 
 RUN apt-get update \
@@ -29,6 +29,7 @@ WORKDIR /build
 COPY . .
 
 RUN export PREFIX="${IA16_PREFIX}" \
+ && export PARALLEL="-j2" \
  && ./fetch.sh \
  && ./build.sh clean \
  && ./build.sh binutils \
@@ -41,7 +42,8 @@ RUN export PREFIX="${IA16_PREFIX}" \
  && ./build.sh libi86 \
  && ./build.sh gcc2 \
  && ./build.sh extra \
- && ./build.sh sim
+ && ./build.sh sim \
+ && rm -rf *
 
 # Create the final image by copying the build result
 FROM tools
