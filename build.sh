@@ -252,12 +252,19 @@ if in_list prereqs BUILDLIST; then
   cont_build_log "make $PARALLEL"
   cont_build_log "make $PARALLEL install"
   popd
+  # https://github.com/tkchia/build-ia16/issues/24
+  if [ \! -e "$PREFIX-gmp/lib" ] && [ -e "$PREFIX-gmp/lib64" ]; then
+    ln -s lib64 "$PREFIX-gmp/lib"
+  fi
   pushd build-mpfr
   ../mpfr-3.1.5/configure --prefix="$PREFIX-mpfr" \
     --with-gmp="$PREFIX-gmp" --disable-shared 2>&1 | tee build.log
   cont_build_log "make $PARALLEL"
   cont_build_log "make $PARALLEL install"
   popd
+  if [ \! -e "$PREFIX-mpfr/lib" ] && [ -e "$PREFIX-mpfr/lib64" ]; then
+    ln -s lib64 "$PREFIX-mpfr/lib"
+  fi
   pushd build-mpc
   ../mpc-1.0.3/configure --prefix="$PREFIX-mpc" \
     --with-gmp="$PREFIX-gmp" --with-mpfr="$PREFIX-mpfr" --disable-shared 2>&1 \
@@ -265,12 +272,18 @@ if in_list prereqs BUILDLIST; then
   cont_build_log "make $PARALLEL"
   cont_build_log "make $PARALLEL install"
   popd
+  if [ \! -e "$PREFIX-mpc/lib" ] && [ -e "$PREFIX-mpc/lib64" ]; then
+    ln -s lib64 "$PREFIX-mpc/lib"
+  fi
   pushd build-isl
   ../isl-0.16.1/configure --prefix="$PREFIX-isl" \
     --with-gmp-prefix="$PREFIX-gmp" --disable-shared 2>&1 | tee build.log
   cont_build_log "make $PARALLEL"
   cont_build_log "make $PARALLEL install"
   popd
+  if [ \! -e "$PREFIX-isl/lib" ] && [ -e "$PREFIX-isl/lib64" ]; then
+    ln -s lib64 "$PREFIX-isl/lib"
+  fi
 fi
 
 obsolete_gcc_multilibs_installed () {
