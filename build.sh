@@ -464,6 +464,23 @@ if in_list newlib BUILDLIST; then
   ln -s ../include/limits.h "$PREFIX"/ia16-elf/sys-include/limits.h
 fi
 
+if in_list causeway BUILDLIST; then
+  echo
+  echo "**********************************"
+  echo "* Building CauseWay DOS extender *"
+  echo "**********************************"
+  echo
+  [ -f libi86/.git/config ] || \
+    ./fetch.sh
+  rm -rf build-causeway
+  cp -a causeway build-causeway
+  pushd build-causeway
+  make clean
+  make $PARALLEL prefix="$PREFIX"
+  make install prefix="$PREFIX"
+  popd
+fi
+
 if either_or_or_in_list elks-libc elf2elks elksemu BUILDLIST; then
   echo
   echo "*********************************************"
@@ -542,23 +559,6 @@ if either_or_or_in_list elks-libc elf2elks elksemu BUILDLIST; then
       done
     done
   done
-  popd
-fi
-
-if in_list causeway BUILDLIST; then
-  echo
-  echo "**********************************"
-  echo "* Building CauseWay DOS extender *"
-  echo "**********************************"
-  echo
-  [ -f libi86/.git/config ] || \
-    ./fetch.sh
-  rm -rf build-causeway
-  cp -a causeway build-causeway
-  pushd build-causeway
-  make clean
-  make $PARALLEL prefix="$PREFIX"
-  make install prefix="$PREFIX"
   popd
 fi
 
